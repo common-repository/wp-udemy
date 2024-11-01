@@ -1,0 +1,60 @@
+<?php
+/**
+ * Widgets
+ *
+ * @package     UFWP\Widgets
+ * @since       1.0.0
+ */
+
+// Exit if accessed directly
+if( !defined( 'ABSPATH' ) ) exit;
+
+/*
+ * Load widgets
+ */
+include_once UFWP_DIR . 'includes/widgets/class.widget.courses.php';
+include_once UFWP_DIR . 'includes/widgets/class.widget.search.php';
+
+/**
+ * Register Widgets
+ */
+function ufwp_register_widgets() {
+    register_widget( 'UFWP_Courses_Widget' );
+    register_widget( 'UFWP_Search_Widget' );
+}
+add_action( 'widgets_init', 'ufwp_register_widgets' );
+
+/**
+ * Build our widget shortcode
+ *
+ * @param array $atts
+ */
+function ufwp_widget_do_shortcode( $atts = array() ) {
+
+    if ( sizeof( $atts ) > 0 ) {
+
+        // Build Shortcode
+        $shortcode = '[ufwp';
+
+        foreach ( $atts as $key => $value ) {
+            $shortcode .= ' ' . $key . '="' . $value . '"';
+        }
+
+        $shortcode .= '/]';
+
+        // Execute Shortcode
+        echo do_shortcode( $shortcode );
+
+    } else {
+        _e( 'Shortcode arguments missing.', 'wp-udemy' );
+    }
+}
+
+/**
+ * Execute shortcodes within text widgets
+ */
+$options = ufwp_get_options();
+
+if ( isset ( $options['widget_text_shortcodes'] ) ) {
+    add_filter( 'widget_text', 'do_shortcode');
+}
